@@ -5,6 +5,10 @@ on:
       - main
       - dev
 
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read  # This is required for actions/checkout
+  
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,12 +17,14 @@ jobs:
 
     - uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-skip-session-tagging: true
-
+        role-to-assume: 'arn:aws:iam::016630595874:role/GitHubActionsDeploymentRole' # ${{ env.IAM_DEPLOY_ROLE_ARN }}
+        role-session-name: samplerolesession
+        aws-region: ${{ env.AWS_REGION }}
+        
     - uses: hkusu/s3-upload-action@v2
       with:
         #aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         #aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        #aws-region: ${{ secrets.AWS_REGION }}
+        aws-region: ${{ secrets.AWS_REGION }}
         aws-bucket: ${{ secrets.AWS_BUCKET_NAME }}
         file-path: './*.yaml'
