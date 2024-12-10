@@ -27,18 +27,6 @@ jobs:
         role-session-name: gh-deploy-session
         aws-region: ${{ env.AWS_REGION }}
         output-credentials: true
-
-    # - uses: shallwefootball/s3-upload-action@master
-    #   with:
-    #     aws_bucket: ${{ secrets.AWS_BUCKET }}
-    #     source_dir: '.'
-
-    - uses: shallwefootball/s3-upload-action@master
-      with:
-        aws_key_id: ${{ steps.creds.outputs.aws-access-key-id }}
-        aws_secret_access_key: ${{ steps.creds.outputs.aws-secret-access-key }}
-        aws_bucket: ${{ env.AWS_BUCKET_NAME }}
-        source_dir: '.'
       
     - name: Copy index.html to s3
       run: |
