@@ -1,0 +1,92 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Creates an AWS budget and notifies you when you exceed thresholds.
+Parameters:
+  BudgetNamePrefix:
+    Description: The name of the budget
+    Type: String
+    Default: ''
+  BudgetName:
+    Description: The name of the budget
+    Type: String
+    Default: Budget
+  Amount:
+    Description: What your budget is for the month
+    Type: Number
+  Currency:
+    Description: The currency of your budget
+    Type: String
+    Default: USD
+  FirstThreshold:
+    Description: The first threshold at which you'll receive a notification
+    Type: Number
+    Default: 75
+  SecondThreshold:
+    Description: The second threshold at which you'll receive a notification
+    Type: Number
+    Default: 99
+  Email:
+    Description: The email address to send notifications to
+    Type: String
+  ThresholdType:
+    Description: ''
+    Type: String
+    Default: PERCENTAGE
+    AllowedValues:
+      - PERCENTAGE
+      - ABSOLUTE_VALUE
+  TimeUnit:
+    Description: The unit of time for the budget
+    Type: String
+    Default: MONTHLY
+    AllowedValues:
+      - DAILY
+      - MONTHLY
+      - QUARTERLY
+      - ANNUALLY
+  NotificationType:
+    Description: The type of notification to send
+    Type: String
+    Default: ACTUAL
+    AllowedValues:
+      - ACTUAL
+      - FORECASTED
+  
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Parameters:
+          - NamePrefix
+          - Name
+          - Amount
+          - Currency
+          - FirstThreshold
+          - SecondThreshold
+          - Email
+Resources:
+  Budget:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetName: !Join ["", [ !Ref NamePrefix, "-", !Ref Name ]]
+        BudgetLimit:
+          Amount: !Ref Amount
+          Unit: !Ref Currency
+        TimeUnit: !Ref TimeUnit
+        BudgetType: COST
+      NotificationsWithSubscribers:
+        - Notification:
+            ComparisonOperator: GREATER_THAN
+            NotificationType: !Ref NotificationType
+            Threshold: !Ref FirstThreshold
+            ThresholdType: !Ref ThresholdType
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !Ref Email
+        - Notification:
+            ComparisonOperator: GREATER_THAN
+            NotificationType: !Ref NotificationType
+            Threshold: !Ref SecondThreshold
+            ThresholdType: !Ref ThresholdType
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !Ref Email
