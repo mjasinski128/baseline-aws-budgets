@@ -26,11 +26,11 @@ jobs:
         role-session-name: gh-deploy-session
         aws-region: ${{ env.AWS_REGION }}
         
-    # - uses: hkusu/s3-upload-action@v2
-    #   with:
-    #     aws-region: ${{ env.AWS_REGION }}
-    #     aws-bucket:  ${{ env.AWS_BUCKET_NAME }}
-    #     file-path: './main.yaml'
+    - uses: hkusu/s3-upload-action@v2
+      with:
+        aws-region: ${{ env.AWS_REGION }}
+        aws-bucket:  ${{ env.AWS_BUCKET_NAME }}
+        file-path: './*.yaml'
       
     - name: Copy index.html to s3
       run: |
