@@ -26,10 +26,10 @@ jobs:
         role-session-name: gh-deploy-session
         aws-region: ${{ env.AWS_REGION }}
 
-    - uses: shallwefootball/s3-upload-action@master
-      with:
-        aws_bucket: ${{ secrets.AWS_BUCKET }}
-        source_dir: '.'
+    # - uses: shallwefootball/s3-upload-action@master
+    #   with:
+    #     aws_bucket: ${{ secrets.AWS_BUCKET }}
+    #     source_dir: '.'
 
     # - uses: hkusu/s3-upload-action@v2
     #   with:
@@ -37,6 +37,6 @@ jobs:
     #     aws-bucket:  ${{ env.AWS_BUCKET_NAME }}
     #     file-path: './*.yaml'
       
-    # - name: Copy index.html to s3
-    #   run: |
-    #     aws s3 cp "*.yaml" 's3://${{ env.AWS_BUCKET_NAME }}/'
+    - name: Copy index.html to s3
+      run: |
+        aws s3 sync . s3://${{ env.AWS_BUCKET_NAME }}/
