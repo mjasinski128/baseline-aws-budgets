@@ -28,5 +28,5 @@ jobs:
         aws-region: ${{ env.AWS_REGION }}
         output-credentials: true
       
-    - name: Copy index.html to s3
+    - name: Copy templates to s3
       run: "aws s3 cp . s3://${{ env.AWS_BUCKET_NAME }}/ --exclude \"*\" --include \"*.yaml\""
