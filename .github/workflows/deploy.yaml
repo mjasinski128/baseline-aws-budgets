@@ -26,12 +26,13 @@ jobs:
         role-to-assume: ${{ env.IAM_DEPLOY_ROLE_ARN }}
         role-session-name: gh-deploy-session
         aws-region: ${{ env.AWS_REGION }}
+        output-credentials: true
 
     # - uses: shallwefootball/s3-upload-action@master
     #   with:
     #     aws_bucket: ${{ secrets.AWS_BUCKET }}
     #     source_dir: '.'
-    
+
     - uses: shallwefootball/s3-upload-action@master
       with:
         aws_key_id: ${{ steps.creds.outputs.aws-access-key-id }}
