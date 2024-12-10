@@ -30,4 +30,4 @@ jobs:
       
     - name: Copy index.html to s3
       run: |
-        aws s3 sync . s3://${{ env.AWS_BUCKET_NAME }}/
+        aws s3 sync *.yaml s3://${{ env.AWS_BUCKET_NAME }}/
