@@ -29,4 +29,4 @@ jobs:
         output-credentials: true
       
     - name: Copy templates to s3
-      run: "aws s3 cp . s3://${{ env.AWS_BUCKET_NAME }}/ --exclude \"*\" --include \"*.yaml\""
+      run: "aws s3 sync . s3://${{ env.AWS_BUCKET_NAME }}/ --exclude \"*\" --include \"*.yaml\""
