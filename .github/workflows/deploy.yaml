@@ -9,6 +9,11 @@ permissions:
   id-token: write # This is required for requesting the JWT
   contents: read  # This is required for actions/checkout
   
+env:
+  AWS_BUCKET_NAME : "baseline-aws-budgets"
+  AWS_REGION : "eu-west-1"
+  IAM_DEPLOY_ROLE_ARN: 'arn:aws:iam::016630595874:role/GitHubActionsDeploymentRole'
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,14 +22,16 @@ jobs:
 
     - uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: 'arn:aws:iam::016630595874:role/GitHubActionsDeploymentRole' # ${{ env.IAM_DEPLOY_ROLE_ARN }}
+        role-to-assume: ${{ env.IAM_DEPLOY_ROLE_ARN }}
         role-session-name: gh-deploy-session
-        aws-region: 'eu-west-1' # ${{ env.AWS_REGION }}
+        aws-region: ${{ env.AWS_REGION }}
         
-    - uses: hkusu/s3-upload-action@v2
-      with:
-        #aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        #aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: 'eu-west-1' # ${{ secrets.AWS_REGION  || 'eu-west-1' }}
-        aws-bucket: 'baseline-aws-budgets' # ${{ secrets.AWS_BUCKET_NAME || 'baseline-aws-budgets' }}
-        file-path: './main.yaml'
+    # - uses: hkusu/s3-upload-action@v2
+    #   with:
+    #     aws-region: ${{ env.AWS_REGION }}
+    #     aws-bucket:  ${{ env.AWS_BUCKET_NAME }}
+    #     file-path: './main.yaml'
+      
+    - name: Copy index.html to s3
+      run: |
+        aws s3 cp ./*.yaml s3://${{ env.AWS_BUCKET_NAME }}/
