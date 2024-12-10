@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  RepoSub:
+    Type: String
+    Description: Audiience Sub condition
+    Default: 'repo:mjasinski128/baseline-aws-budgets:ref:refs/heads/*' 
+  GitHubActionsThumbprint:
+    Type: String
+    Description: GitHub Actions OIDC thumbprint
+    Default: 'd89e3bd43d5d909b47a18977aa9d5ce36cee184c'  # GitHub's OIDC thumbprint
+
+Resources:
+  GitHubActionsOIDCProvider:
+    Type: 'AWS::IAM::OIDCProvider'
+    Properties:
+      Url: 'https://token.actions.githubusercontent.com'
+      ClientIdList:
+        - 'sts.amazonaws.com'
+      ThumbprintList:
+        - !Ref 'GitHubActionsThumbprint'
+
+  GitHubActionsRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: 'GitHubActionsDeploymentRole'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Federated: !Ref GitHubActionsOIDCProvider
+            Action: 'sts:AssumeRoleWithWebIdentity'
+            Condition:
+              StringLike:
+                'token.actions.githubusercontent.com:sub': !Ref RepoSub
+      Policies:
+        - PolicyName: 'S3FullAccessPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action: 's3:*'
+                Resource: '*'
+
+Outputs:
+  RoleArn:
+    Description: 'ARN of the IAM role for GitHub Actions'
+    Value: !GetAtt GitHubActionsRole.Arn
