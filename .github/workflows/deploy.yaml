@@ -18,7 +18,7 @@ jobs:
     - uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume: 'arn:aws:iam::016630595874:role/GitHubActionsDeploymentRole' # ${{ env.IAM_DEPLOY_ROLE_ARN }}
-        role-session-name: samplerolesession
+        role-session-name: gh-deploy-session
         aws-region: 'eu-west-1' # ${{ env.AWS_REGION }}
         
     - uses: hkusu/s3-upload-action@v2
@@ -27,4 +27,4 @@ jobs:
         #aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: 'eu-west-1' # ${{ secrets.AWS_REGION  || 'eu-west-1' }}
         aws-bucket: 'baseline-aws-budgets' # ${{ secrets.AWS_BUCKET_NAME || 'baseline-aws-budgets' }}
-        file-path: './*.yaml'
+        file-path: './main.yaml'
