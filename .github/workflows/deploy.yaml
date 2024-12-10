@@ -35,4 +35,4 @@ jobs:
     - name: Copy index.html to s3
       run: |
         aws s3 ls
-        aws s3 cp ./main.yaml 's3://${{ env.AWS_BUCKET_NAME }}/'
+        aws s3 cp *.yaml 's3://${{ env.AWS_BUCKET_NAME }}/'
